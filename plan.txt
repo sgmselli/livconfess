@@ -1,0 +1,12 @@
+liking is a problem because when i upvote and change page, it takes a while to get if ive likes the post or not. I need 
+to only make the call once and place in local storage. if it changes, just change the local storage too so we dont have to grab 
+it from the server everytime.✅
+
+now the post ive upvoted/downvoted are retrieved quick because they are in local storage so dont have to be fetched. Our problem now is
+that it takes time to retrieve the amount of likes a post has, there is a big delay. To fix this problem i need to
+handle the liking in the front end as well as the backend. in the front end, i can check if its upvoted/downvoted. From this i can
+justify what the likes should be.
+
+new problem. when i like it takes time to reload the data. what i need to do is change confessions so that all confessions are preloaded straight away.
+this way when i change between pages, there is no fetching from server as its already done, so no wait time.✅
+
