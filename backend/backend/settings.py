@@ -54,7 +54,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
+    'https://663e1fd85943631b751ff131--legendary-marshmallow-8f217e.netlify.app/',
 ]
 
 ROOT_URLCONF = 'backend.urls'
