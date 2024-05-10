@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-usd&^ft#3n6*a*)^9%84iu62(r_irus+)77d(tvsyj904)1qew
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['livconfessionsapi.top']
+ALLOWED_HOSTS = ['livconfessions-backend.onrender.com']
 
 
 # Application definition
