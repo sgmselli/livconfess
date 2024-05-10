@@ -54,7 +54,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'https://663e38e6bad0a306be052a9e--dancing-lily-040c60.netlify.app',
+    'https://663ea6671107b25a66a0bcd0--dancing-lily-040c60.netlify.app',
 ]
 
 ROOT_URLCONF = 'backend.urls'

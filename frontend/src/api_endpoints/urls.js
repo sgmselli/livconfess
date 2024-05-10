@@ -1,4 +1,4 @@
-const BASE = 'http://livconfessionsapi.top:8000/';
+const BASE = 'https://livconfessions-backend.onrender.com/';
 
 export const CONFESSIONS_URL = `${BASE}api/confession/`;
 export const NEW_CONFESSIONS_URL = `${BASE}api/new/confessions/`;
