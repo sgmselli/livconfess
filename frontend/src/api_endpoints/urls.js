@@ -1,4 +1,4 @@
-const BASE = 'http://3.8.97.225:8000/';
+const BASE = 'http://livconfessionsapi.top:8000/';
 
 export const CONFESSIONS_URL = `${BASE}api/confession/`;
 export const NEW_CONFESSIONS_URL = `${BASE}api/new/confessions/`;
