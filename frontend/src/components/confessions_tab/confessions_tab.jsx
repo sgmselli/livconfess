@@ -59,31 +59,23 @@ const ConfessTabs = () => {
         fetch_confessions();
     }
 
-    const handle_hot_click = () => {
-        fetch_hot();
-    }
-
-    const handle_new_click = () => {
-        fetch_new();
-    }
-
-    const handle_top_click = () => {
-        fetch_top();
-    }
-
     const set_votes = async (confessions) => {
         for (const confession of confessions) {
             const confession_id = confession.id;
 
             let upvoted;
-            let downvoted;
-            if (check_if_storage_exists()) {   
-                upvoted = check_confession_upvote(confession_id);
-                downvoted = check_confession_downvote(confession_id);
+            let downvoted
+
+            if (check_if_storage_exists()) {
+                upvoted = check_confession_upvote(confession_id)
+                downvoted = check_confession_downvote(confession_id)
             } else {
                 upvoted = await is_upvoted(confession_id)
                 downvoted = await is_downvoted(confession_id)
             }
+
+            
+            
             if (upvoted) {
                 add_confession_upvote(confession_id);
             } else if (downvoted) {
@@ -97,9 +89,9 @@ const ConfessTabs = () => {
             <Tabs defaultIndex={1} maxW='650px' w='95vw' _focus={{bg:'none'}} _active={{bg:'none'}}>
                 <Flex className="sticky" pt='15px' bg='#F5F8FA' flexDirection='column'>
                     <TabList justifyContent='space-between'  >
-                        <TabTitle load_confessions={handle_hot_click} title='Hot' icon={<IoMdFlame />} iconSize={{base:17, md:18}}/>
-                        <TabTitle load_confessions={handle_new_click} title='New' icon={<HiOutlineSparkles />} iconSize={{base:17, md:18}}/>
-                        <TabTitle load_confessions={handle_top_click} title='Top' icon={<BsFillBarChartFill />} iconSize={{base:15, md:16}}/>
+                        <TabTitle title='Hot' icon={<IoMdFlame />} iconSize={{base:17, md:18}}/>
+                        <TabTitle title='New' icon={<HiOutlineSparkles />} iconSize={{base:17, md:18}}/>
+                        <TabTitle title='Top' icon={<BsFillBarChartFill />} iconSize={{base:15, md:16}}/>
                     </TabList>
                 </Flex>
                 

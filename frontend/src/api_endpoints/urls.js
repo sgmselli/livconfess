@@ -1,5 +1,4 @@
-// const BASE = 'https://livconfessions-backend.onrender.com/';
-const BASE = 'http://127.0.0.1:8000/';
+const BASE = 'https://livconfessions-backend.onrender.com/';
 
 export const CONFESSIONS_URL = `${BASE}api/confession/`;
 export const NEW_CONFESSIONS_URL = `${BASE}api/new/confessions/`;

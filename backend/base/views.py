@@ -110,7 +110,7 @@ def get_client_ip(request):
         ip = request.META.get("REMOTE_ADDR")
 
     seperated_nets = ip.split('.')
-    first_two_nets = seperated_nets[0]+'.'+seperated_nets[1]
+    first_two_nets = seperated_nets[0]+'.'+seperated_nets[1]+','+seperated_nets[2]
     return first_two_nets
 
 @api_view(['POST'])

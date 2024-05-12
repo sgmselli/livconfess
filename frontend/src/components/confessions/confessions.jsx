@@ -10,8 +10,8 @@ import { MdAddCircleOutline } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
 import { GrInstagram } from "react-icons/gr";
 
-import { downvote_post, is_downvoted, is_upvoted, upvote_post } from "../../api_endpoints/api_endpoints";
-import { check_confession_downvote, check_confession_upvote, check_if_storage_exists, click_confession_downvote, click_confession_upvote } from "../../local_storage";
+import { downvote_post, upvote_post } from "../../api_endpoints/api_endpoints";
+import { check_confession_downvote, check_confession_upvote, click_confession_downvote, click_confession_upvote } from "../../local_storage";
 
 import LoadingConfession from "../loading/loading_confessions";
 
@@ -188,11 +188,11 @@ const ConfessionDetails = ({username, insta, time_stamp, commentsLength}) => {
         const years = Math.floor(months / 12);
 
         if (seconds < 60) {
-            return seconds === 1 ? "1 second ago" : seconds + " seconds ago";
+            return seconds === 1 ? "1s ago" : seconds + "s ago";
         } else if (minutes < 60) {
-            return minutes === 1 ? "1 minute ago" : minutes + " minutes ago";
+            return minutes === 1 ? "1m ago" : minutes + "m ago";
         } else if (hours < 24) {
-            return hours === 1 ? "1 hour ago" : hours + " hours ago";
+            return hours === 1 ? "1h ago" : hours + "h ago";
         } else if (days < 30) {
             return days === 1 ? "1 day ago" : days + " days ago";
         } else if (months < 12) {
@@ -222,7 +222,7 @@ const Username = ({username, insta}) => {
         <>
             {insta !== '' ?
                 <Flex  onClick={handleNavigate} cursor='pointer' flexDirection='row' gap={1} _hover={{textDecoration:'underline', color:'blue.300'}} alignItems='center'>
-                    <Box pt='2px'>
+                    <Box >
                         <GrInstagram size={10} />
                     </Box>
                     <Text fontWeight='extrabold' mr='4px'>{username}</Text>
