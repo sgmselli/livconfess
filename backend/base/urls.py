@@ -2,7 +2,6 @@ from . import views
 from django.urls import path, include
 
 urlpatterns = [
-    path('api/', include('base.urls')),
     path('ip/', views.create_ip),
     path('confession/', views.get_confession),
     path('new/confessions/', views.get_new_confessions),

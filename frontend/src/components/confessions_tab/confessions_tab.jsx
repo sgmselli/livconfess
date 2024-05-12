@@ -9,7 +9,7 @@ import { BsFillBarChartFill } from "react-icons/bs";
 import { IoMdFlame } from "react-icons/io";
 
 import ConfessionList from "../confessions/confessions.jsx";
-import { add_confession_downvote, add_confession_upvote, initialise_storage } from "../../local_storage.js";
+import { add_confession_downvote, add_confession_upvote, check_confession_downvote, check_confession_upvote, check_if_storage_exists, initialise_storage } from "../../local_storage.js";
 
 const ConfessTabs = () => {
 
@@ -74,8 +74,16 @@ const ConfessTabs = () => {
     const set_votes = async (confessions) => {
         for (const confession of confessions) {
             const confession_id = confession.id;
-            const upvoted = await is_upvoted(confession_id)
-            const downvoted = await is_downvoted(confession_id)
+
+            let upvoted;
+            let downvoted;
+            if (check_if_storage_exists()) {   
+                upvoted = check_confession_upvote(confession_id);
+                downvoted = check_confession_downvote(confession_id);
+            } else {
+                upvoted = await is_upvoted(confession_id)
+                downvoted = await is_downvoted(confession_id)
+            }
             if (upvoted) {
                 add_confession_upvote(confession_id);
             } else if (downvoted) {

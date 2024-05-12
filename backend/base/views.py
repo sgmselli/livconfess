@@ -107,7 +107,10 @@ def get_client_ip(request):
         ip = x_forward_for.split(",")[0]
     else:
         ip = request.META.get("REMOTE_ADDR")
-    return ip
+
+    seperated_nets = ip.split('.')
+    first_two_nets = seperated_nets[0]+'.'+seperated_nets[1]
+    return first_two_nets
 
 @api_view(['POST'])
 def create_ip(request):
@@ -132,10 +135,12 @@ def upvote_post(request):
         if confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
             confession.upvotes.remove(IP.objects.get(ip_address=ip))
             return(Response({'upvotes':'removed', 'downvote': 'unchanged'}))
-        elif not confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists() and confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
+        
+        elif (not confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists()) and (confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists()):
             confession.upvotes.add(IP.objects.get(ip_address=ip))
             confession.downvotes.remove(IP.objects.get(ip_address=ip))
             return(Response({'upvotes':'added', 'downvote': 'removed'}))
+        
         else:
             confession.upvotes.add(IP.objects.get(ip_address=ip))
             return(Response({'upvotes':'added', 'downvote': 'unchanged'}))
@@ -153,15 +158,17 @@ def downvote_post(request):
 
         ip = get_client_ip(request)
         if not IP.objects.filter(ip_address=ip).exists():
-            return(Response({'upvotes':'unchanged', 'downvote': 'unchanged'}))
-        
+            IP.objects.create(ip_address=ip)
+
         if confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
             confession.downvotes.remove(IP.objects.get(ip_address=ip))
             return(Response({'upvotes':'unchanged', 'downvote': 'removed'}))
-        elif not confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists() and confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
+        
+        elif (not confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists()) and (confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists()):
             confession.downvotes.add(IP.objects.get(ip_address=ip))
             confession.upvotes.remove(IP.objects.get(ip_address=ip))
             return(Response({'upvotes':'removed', 'downvote': 'added'}))
+        
         else:
             confession.downvotes.add(IP.objects.get(ip_address=ip))
             return(Response({'upvotes':'unchanged', 'downvote': 'added'}))
@@ -179,11 +186,12 @@ def upvote_comment(request):
 
         ip = get_client_ip(request)
         if not IP.objects.filter(ip_address=ip).exists():
-            return(Response({'upvotes':'unchanged', 'downvote': 'unchanged'}))
+            IP.objects.create(ip_address=ip)
         
         if comment.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
             comment.upvotes.remove(IP.objects.get(ip_address=ip))
             return(Response({'upvotes':'removed', 'downvote': 'unchanged'}))
+        
         elif not comment.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists() and comment.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
             comment.upvotes.add(IP.objects.get(ip_address=ip))
             comment.downvotes.remove(IP.objects.get(ip_address=ip))
