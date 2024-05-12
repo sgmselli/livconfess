@@ -28,8 +28,9 @@ class Comment(models.Model):
 
 class Confession(models.Model):
     id = uuid1()
-    username = models.CharField(max_length=1000, default='anonymous')
-    text = models.CharField(max_length=1000)
+    username = models.CharField(max_length=16, default='anonymous')
+    instagram = models.CharField(max_length=30, default='')
+    text = models.CharField(max_length=500)
     time_stamp = models.CharField(max_length=100, default=datetime.now())
     upvotes = models.ManyToManyField(IP, related_name='upvotes', blank=True)
     downvotes = models.ManyToManyField(IP, related_name='downvotes', blank=True)

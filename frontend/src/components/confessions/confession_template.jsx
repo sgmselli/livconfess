@@ -7,15 +7,17 @@ import { FaRegThumbsUp } from "react-icons/fa6";
 import { FaThumbsUp } from "react-icons/fa6";
 import { FaRegThumbsDown } from "react-icons/fa6";
 import { FaThumbsDown } from "react-icons/fa6";
+import { GrInstagram } from "react-icons/gr";
 
-export const Confession = ({updateConfessions, id, text, username, time_stamp, upvotes, downvotes, commentsLength}) => {
+
+export const Confession = ({updateConfessions, id, text, username, insta, time_stamp, upvotes, downvotes, commentsLength}) => {
 
     return (
-        <Flex cursor='pointer' w='95vw' maxW='650px' minH='160px' bg='white' borderRadius={10} transition="border-color 0.3s ease" border='1px solid' borderColor='gray.300'>
-            <Flex w='100%' p='22px 40px 20px 25px' flexDirection='row'>
-                <Flex w='100%'  gap={10} flexDirection='column' justifyContent='space-between'>
+        <Flex cursor='pointer' w='95vw' maxW='650px' minH='160px' bg='white' borderRadius={10} transition="border-color 0.3s ease" border='1px solid' borderColor='gray.300' >
+            <Flex w='100%' p={{base:'20px 18px 18px 23px', lg:'22px 40px 20px 25px'}} flexDirection='row' justifyContent='space-between' gap={4}>
+                <Flex w='100%' gap={10} flexDirection='column' justifyContent='space-between'>
                     <ConfessionText text={text} />
-                    <ConfessionFooter updateConfessions={updateConfessions} id={id} username={username} time_stamp={time_stamp} upvotes={upvotes} downvotes={downvotes} commentsLength={commentsLength}/>
+                    <ConfessionFooter updateConfessions={updateConfessions} id={id} username={username} insta={insta} time_stamp={time_stamp} upvotes={upvotes} downvotes={downvotes} commentsLength={commentsLength}/>
                 </Flex>
             </Flex>
         </Flex>
@@ -28,10 +30,10 @@ const ConfessionText = ({text}) => {
     )
 }
 
-const ConfessionFooter = ({updateConfessions, id, username, time_stamp, upvotes, downvotes, commentsLength}) => {
+const ConfessionFooter = ({updateConfessions, id, username, insta, time_stamp, upvotes, downvotes, commentsLength}) => {
     return (
         <Flex flexDirection='row' justifyContent='space-between' alignItems='center'>   
-            <ConfessionDetails username={username} time_stamp={time_stamp} commentsLength={commentsLength}/>
+            <ConfessionDetails username={username} insta={insta} time_stamp={time_stamp} commentsLength={commentsLength}/>
             <ConfessionVotes updateConfessions={updateConfessions} id={id} upvotes={upvotes} downvotes={downvotes} />
         </Flex>
     )
@@ -103,7 +105,7 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
     )
 }
 
-const ConfessionDetails = ({username, time_stamp, commentsLength}) => {
+const ConfessionDetails = ({username, insta, time_stamp, commentsLength}) => {
 
     const getTimeAgo = (timestamp) => {
         const now = new Date();
@@ -134,9 +136,34 @@ const ConfessionDetails = ({username, time_stamp, commentsLength}) => {
 
     return (
         <Flex flexDirection='row' flexWrap='nowrap' color='gray.400' fontSize={{base: '9px', lg:'12px'}} fontWeight='medium'>
-            <Text mr='4px'>Posted by</Text><Text fontWeight='extrabold' mr='4px'>{username}</Text>
+            <Text mr='4px'>Posted by</Text>
+            <Username username={username} insta={insta} />
             <Text>{getTimeAgo(time_stamp)}</Text><Text ml='5px' mr='5px'>|</Text>
             <Text cursor='pointer' _hover={{textDecoration:'underline', color:'blue.300'}}>{commentsLength} comments</Text>
         </Flex>
     )
+}
+
+const Username = ({username, insta}) => {
+
+    const handleNavigate = () => {
+        window.open(`https://www.instagram.com/${insta}`, "_blank");
+    }
+
+    return (
+        <>
+            {insta !== '' ?
+                <Flex  onClick={handleNavigate} cursor='pointer' flexDirection='row' gap={1} _hover={{textDecoration:'underline', color:'blue.300'}} alignItems='center'>
+                    <Box pt='2px'>
+                        <GrInstagram size={10} />
+                    </Box>
+                    <Text fontWeight='extrabold' mr='4px'>{username}</Text>
+                </Flex>
+                :
+                <Text mr='4px'>{username}</Text>
+            }
+        </>
+        
+    )
+    
 }

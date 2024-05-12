@@ -8,6 +8,8 @@ import { FaRegThumbsDown } from "react-icons/fa6";
 import { FaThumbsDown } from "react-icons/fa6";
 import { MdAddCircleOutline } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
+import { GrInstagram } from "react-icons/gr";
+
 import { downvote_post, is_downvoted, is_upvoted, upvote_post } from "../../api_endpoints/api_endpoints";
 import { check_confession_downvote, check_confession_upvote, check_if_storage_exists, click_confession_downvote, click_confession_upvote } from "../../local_storage";
 
@@ -24,7 +26,7 @@ const ConfessionList = ({confessions, updateConfessions}) => {
                         if (idx == 3 || idx == 15 || idx == 32 || idx == 55 || idx == 86) {
                             return <AddConfession key={idx} />
                         } else {
-                            return <Confession key={idx} updateConfessions={updateConfessions} idx={idx+1} id={confession.id} text={confession.text} username={confession.username} time_stamp={confession.time_stamp} upvotes={confession.upvotes} downvotes={confession.downvotes} commentsLength={confession.comments.length}/>
+                            return <Confession key={idx} updateConfessions={updateConfessions} idx={idx+1} id={confession.id} text={confession.text} username={confession.username} insta={confession.instagram} time_stamp={confession.time_stamp} upvotes={confession.upvotes} downvotes={confession.downvotes} commentsLength={confession.comments.length}/>
                         }
 
                     })
@@ -45,7 +47,7 @@ const ConfessionList = ({confessions, updateConfessions}) => {
     )
 }
 
-const Confession = ({idx, updateConfessions, id, text, username, time_stamp, upvotes, downvotes, commentsLength}) => {
+const Confession = ({idx, updateConfessions, id, text, username, insta, time_stamp, upvotes, downvotes, commentsLength}) => {
 
     const [isHovered, setHovered] = useState(false);
     const navigate = useNavigate();
@@ -72,7 +74,7 @@ const Confession = ({idx, updateConfessions, id, text, username, time_stamp, upv
                 </Box>
                 <Flex w='100%' gap={10} flexDirection='column' justifyContent='space-between'>
                     <ConfessionText isHovered={isHovered} text={text} />
-                    <ConfessionFooter updateConfessions={updateConfessions} id={id} username={username} time_stamp={time_stamp} upvotes={upvotes} downvotes={downvotes} commentsLength={commentsLength}/>
+                    <ConfessionFooter updateConfessions={updateConfessions} id={id} username={username} insta={insta} time_stamp={time_stamp} upvotes={upvotes} downvotes={downvotes} commentsLength={commentsLength}/>
                 </Flex>
             </Flex>
         </Flex>
@@ -85,10 +87,10 @@ const ConfessionText = ({text, isHovered}) => {
     )
 }
 
-const ConfessionFooter = ({updateConfessions, id, username, time_stamp, upvotes, downvotes, commentsLength}) => {
+const ConfessionFooter = ({updateConfessions, id, username, insta, time_stamp, upvotes, downvotes, commentsLength}) => {
     return (
         <Flex flexDirection='row' justifyContent='space-between' alignItems='center'>   
-            <ConfessionDetails username={username} time_stamp={time_stamp} commentsLength={commentsLength}/>
+            <ConfessionDetails username={username} insta={insta} time_stamp={time_stamp} commentsLength={commentsLength}/>
             <ConfessionVotes updateConfessions={updateConfessions} id={id} upvotes={upvotes} downvotes={downvotes} />
         </Flex>
     )
@@ -122,9 +124,7 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
     }
 
     const handleUpVote = async () => {  
-        // count_after_upvote();   
         click_confession_upvote(id);
-        
         isUpvoted();
         isDownvoted();
         await upvote_post(id);  
@@ -132,33 +132,12 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
     }
 
     const handleDownVote = async (e) => {
-        // count_after_downvote();   
         click_confession_downvote(id);
         isUpvoted();
         isDownvoted();
         await downvote_post(id); 
         updateConfessions();
     }
-
-    // const count_after_upvote = () => {
-    //     if (check_confession_upvote(id)) {
-    //         setVoteCount(voteCount-1)
-    //     } else if (check_confession_downvote(id)) {
-    //         setVoteCount(voteCount+2)
-    //     } else {
-    //         setVoteCount(voteCount+1)
-    //     }
-    // }
-
-    // const count_after_downvote = () => {
-    //     if (check_confession_downvote(id)) {
-    //         setVoteCount(voteCount+1)
-    //     } else if (check_confession_upvote(id)) {
-    //         setVoteCount(voteCount-2)
-    //     } else {
-    //         setVoteCount(voteCount-1)
-    //     }
-    // }
 
     const vote_count = () => {
         return upvotes.length - downvotes.length
@@ -194,7 +173,7 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
     )
 }
 
-const ConfessionDetails = ({username, time_stamp, commentsLength}) => {
+const ConfessionDetails = ({username, insta, time_stamp, commentsLength}) => {
 
     const getTimeAgo = (timestamp) => {
         const now = new Date();
@@ -207,7 +186,7 @@ const ConfessionDetails = ({username, time_stamp, commentsLength}) => {
         const days = Math.floor(hours / 24);
         const months = Math.floor(days / 30);
         const years = Math.floor(months / 12);
-    
+
         if (seconds < 60) {
             return seconds === 1 ? "1 second ago" : seconds + " seconds ago";
         } else if (minutes < 60) {
@@ -225,11 +204,36 @@ const ConfessionDetails = ({username, time_stamp, commentsLength}) => {
 
     return (
         <Flex flexDirection='row' flexWrap='nowrap' color='gray.400' fontSize={{base: '9px', lg:'12px'}} fontWeight='medium'>
-            <Text mr='4px'>Posted by</Text><Text fontWeight='extrabold' mr='4px'>{username}</Text>
+            <Text mr='4px'>Posted by</Text>
+            <Username username={username} insta={insta} />
             <Text>{getTimeAgo(time_stamp)}</Text><Text ml='5px' mr='5px'>|</Text>
             <Text cursor='pointer' _hover={{textDecoration:'underline', color:'blue.300'}}>{commentsLength} comments</Text>
         </Flex>
     )
+}
+
+const Username = ({username, insta}) => {
+
+    const handleNavigate = () => {
+        window.open(`https://www.instagram.com/${insta}`, "_blank");
+    }
+
+    return (
+        <>
+            {insta !== '' ?
+                <Flex  onClick={handleNavigate} cursor='pointer' flexDirection='row' gap={1} _hover={{textDecoration:'underline', color:'blue.300'}} alignItems='center'>
+                    <Box pt='2px'>
+                        <GrInstagram size={10} />
+                    </Box>
+                    <Text fontWeight='extrabold' mr='4px'>{username}</Text>
+                </Flex>
+                :
+                <Text mr='4px'>{username}</Text>
+            }
+        </>
+        
+    )
+    
 }
 
 const AddConfession = () => {

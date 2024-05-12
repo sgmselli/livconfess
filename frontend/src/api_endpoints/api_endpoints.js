@@ -18,8 +18,8 @@ export const get_top_confessions = async () => {
     return await get_endpoint(TOP_CONFESSIONS_URL);
 }
 
-export const post_confession = async (username, text) => {
-    return await post_endpoint(POST_URL, {username:username, text:text})
+export const post_confession = async (username, instagram, text) => {
+    return await post_endpoint(POST_URL, {username:username, instagram:instagram, text:text})
 }
 
 export const upvote_post = async (id) => {

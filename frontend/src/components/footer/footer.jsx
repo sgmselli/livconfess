@@ -31,7 +31,10 @@ const FooterLinkSection = () => {
 
     const navigate = useNavigate();
 
-    const redirect_confessions = () => {
+    const redirect_confessions = async () => {
+        if (window.location.pathname !== '/') {
+            await navigate('/')
+        }
         document.getElementById('confessions').scrollIntoView({ behavior: 'smooth'});
     }
 
@@ -47,7 +50,6 @@ const FooterLinkSection = () => {
 
     const engage_links = [
         {'title': 'Post confession', 'function': redirect_post},
-        {'title': 'Sponser us', 'function': redirect_post},
     ]
 
     const contact_links = [
@@ -65,8 +67,6 @@ const FooterLinkSection = () => {
 }
 
 const FooterColumn = ({header, links}) => {
-    
-
     return (
         <Flex mb='60px' flexDirection='column' gap={6}>
             <Text fontSize='17px' className='rubik-medium' color='gray.600'>{header}</Text>

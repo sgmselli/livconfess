@@ -32,10 +32,10 @@ const CopyLink = () => {
 }
 
 
-const FaceBookLink = () => {
+const FaceBookLink = (id) => {
 
     const handleDirect = () => {
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('http://localhost:3000/confession/29')}`);
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://livconfessions.com/confession/${id}`)}`);
     }
 
     return (

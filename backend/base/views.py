@@ -52,7 +52,6 @@ def get_hot_confessions(request):
 
     ordered_confessions = sorted(less_than_30_days, key=lambda x: x.total_votes(), reverse=True)[:100]
     random.seed(42)
-    # random.shuffle(ordered_confessions)
 
     serializer = ConfessionSerializer(ordered_confessions, many=True)
     return Response(serializer.data)
@@ -96,7 +95,9 @@ def create_confession(request):
     
     confession = Confession.objects.create(
         username = data['username'],
-        text = data['text']
+        instagram = data['instagram'],
+        text = data['text'],
+        time_stamp = datetime.now(),
     )
     serializer = ConfessionSerializer(confession, many=False)
     return Response(serializer.data)

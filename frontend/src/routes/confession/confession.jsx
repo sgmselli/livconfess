@@ -1,7 +1,8 @@
-import { ChakraProvider, Flex, Text, Textarea, Input, Button, Checkbox, Box } from '@chakra-ui/react';
+import { ChakraProvider, Flex, Text, Textarea, Input, Button, Checkbox, Box, Spinner } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 
 import LoadingBar from '../../components/loading/loading_bar';
+import LoadingConfession from '../../components/loading/loading_confessions';
 import BackButton from '../../components/back_button/back_button';
 import { comment_is_downvoted, comment_is_upvoted, downvote_comment, get_confession, post_comment, upvote_comment } from '../../api_endpoints/api_endpoints';
 
@@ -43,27 +44,35 @@ const ConfessionBody = () => {
     }
 
     return (
-        <Flex pt='20px' maxW='650px' w='92vw' flexDirection='column' alignItems='center'>
-            <BackButton/>
-            <Title username={confession ? confession.username : ''}/>
-
-            <ConfessionPosted confession={confession} updateConfessions={fetch_confession} />
+        <>
             {
                 confession ?
-                    <CommentSection id={confession ? confession.id : ''} comments={confession ? confession.comments : []} updateConfessions={fetch_confession} />
+                <Flex pt='20px' maxW='650px' w='92vw' flexDirection='column' alignItems='center'>
+                <BackButton/>
+                <Title username={confession ? confession.username : ''}/>
+
+                <ConfessionPosted confession={confession} updateConfessions={fetch_confession} />
+                <CommentSection id={confession ? confession.id : ''} comments={confession ? confession.comments : []} updateConfessions={fetch_confession} />
+                </Flex>
+                
+                   
                 :
-                    ''
+                <Flex pt='155px' pb='100vh' alignItems='center' justifyContent='center'>
+                   <LoadingConfession/>
+                </Flex>
+                
+           
             }
 
-            
-        </Flex>
+</>
+        
     )
 }
 
 const Title = ({username}) => {
     return (
         <Flex w='100%' flexDirection='column'>
-            <Text mt='15px' className='rubik-bold' fontSize='32px' color='gray.600'>
+            <Text mt='15px' className='rubik-bold' fontSize={{base: '26px', md: '32px'}} color='gray.600'>
                 {username === 'anonymous' ?
                     'Anonymous confession' 
                 :
@@ -85,7 +94,7 @@ const ConfessionPosted = ({confession, updateConfessions}) => {
 
                     <Flex flexDirection='column' gap={5}>
                         <Confession idx={1} updateConfessions={updateConfessions} id={confession.id} text={confession.text} username={confession.username} time_stamp={confession.time_stamp} upvotes={confession.upvotes} downvotes={confession.downvotes} commentsLength={confession.comments.length}/>
-                        <ShareLinks />
+                        <ShareLinks id={confession.id} />
                     </Flex>
 
                 :
@@ -202,6 +211,7 @@ const Comment = ({id, comment, upvotes, downvotes, time_stamp, updateConfessions
         const postTime = new Date(timestamp);
     
         const timeDifference = now - postTime;
+
         const seconds = Math.floor(timeDifference / 1000);
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
