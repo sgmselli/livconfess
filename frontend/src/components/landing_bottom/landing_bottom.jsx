@@ -52,7 +52,7 @@ const About = () => {
                     {/* <Text>Scroll through confessions, upvote, downvote, comment--no account needed.</Text>
                     <Text>See you posted confession is the current hottest, or if it makes it to the top voted!</Text> */}
                 </Flex>
-                <Flex><Text mr='4px'>Feel free to give us some</Text><Text textDecoration='underline'>feedback</Text><Text>.</Text></Flex>
+                {/* <Flex><Text mr='4px'>Feel free to give us some</Text><Text textDecoration='underline'>feedback</Text><Text>.</Text></Flex> */}
             </Flex>
         </Flex>
         

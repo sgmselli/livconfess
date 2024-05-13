@@ -33,13 +33,17 @@ const FooterLinkSection = () => {
 
     const redirect_confessions = async () => {
         if (window.location.pathname !== '/') {
-            await navigate('/')
+            await navigate('/');
         }
         document.getElementById('confessions').scrollIntoView({ behavior: 'smooth'});
     }
 
     const redirect_post = () => {
-        navigate('/confess')
+        navigate('/confess');
+    }
+
+    const redirect_author = () => {
+        window.open('https://www.instagram.com/sellingsm');
     }
 
     const discover_links = [
@@ -53,7 +57,7 @@ const FooterLinkSection = () => {
     ]
 
     const contact_links = [
-        {'title': 'Give us feedback', 'function': redirect_post},
+        {'title': 'Developer', 'function': redirect_author},
     ]
 
 

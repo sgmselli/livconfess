@@ -15,7 +15,7 @@ export const Confession = ({updateConfessions, id, text, username, insta, time_s
 
     return (
         <Flex cursor='pointer' w='95vw' maxW='650px' minH='160px' bg='white' borderRadius={10} transition="border-color 0.3s ease" border='1px solid' borderColor='gray.300' >
-            <Flex w='100%' p={{base:'20px 18px 18px 23px', lg:'22px 40px 20px 25px'}} flexDirection='row' justifyContent='space-between' gap={4}>
+            <Flex w='100%' p={{base:'20px 14px 18px 20px', lg:'22px 40px 20px 25px'}} flexDirection='row' justifyContent='space-between' gap={4}>
                 <Flex w='100%' gap={10} flexDirection='column' justifyContent='space-between'>
                     <ConfessionText text={text} />
                     <ConfessionFooter updateConfessions={updateConfessions} id={id} username={username} insta={insta} time_stamp={time_stamp} upvotes={upvotes} downvotes={downvotes} commentsLength={commentsLength}/>
@@ -124,11 +124,11 @@ const ConfessionDetails = ({username, insta, time_stamp, commentsLength}) => {
         const years = Math.floor(months / 12);
     
         if (seconds < 60) {
-            return seconds === 1 ? "1 second ago" : seconds + " seconds ago";
+            return seconds === 1 ? "1s ago" : seconds + "s ago";
         } else if (minutes < 60) {
-            return minutes === 1 ? "1 minute ago" : minutes + " minutes ago";
+            return minutes === 1 ? "1m ago" : minutes + "m ago";
         } else if (hours < 24) {
-            return hours === 1 ? "1 hour ago" : hours + " hours ago";
+            return hours === 1 ? "1h ago" : hours + "h ago";
         } else if (days < 30) {
             return days === 1 ? "1 day ago" : days + " days ago";
         } else if (months < 12) {
@@ -139,7 +139,7 @@ const ConfessionDetails = ({username, insta, time_stamp, commentsLength}) => {
     }
 
     return (
-        <Flex flexDirection='row' flexWrap='nowrap' color='gray.400' fontSize={{base: '9px', lg:'12px'}} fontWeight='medium'>
+        <Flex flexDirection='row' flexWrap='nowrap' color='gray.400' fontSize={{base: '8px', lg:'12px'}} fontWeight='medium'>
             <Text mr='4px'>Posted by</Text>
             <Username username={username} insta={insta} />
             <Text>{getTimeAgo(time_stamp)}</Text><Text ml='5px' mr='5px'>|</Text>

@@ -68,7 +68,7 @@ const Confession = ({idx, updateConfessions, id, text, username, insta, time_sta
 
     return (
         <Flex onClick={(e) => handleDirect(e)} cursor='pointer' w='95vw' maxW='650px' minH='160px' bg='white' borderRadius={10} transition="border-color 0.3s ease" border='1px solid' borderColor={isHovered ? 'gray.500' : 'gray.300' } onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
-            <Flex w='100%' p={{base:'20px 18px 18px 23px', lg:'22px 40px 20px 25px'}} flexDirection='row' justifyContent='space-between' gap={4}>
+            <Flex w='100%' p={{base:'20px 14px 18px 20px', lg:'22px 40px 20px 25px'}} flexDirection='row' justifyContent='space-between' gap={4}>
                 <Box display={{base:'none', md:'block'}}>
                     <ConfessionNum idx={idx}/>
                 </Box>
@@ -204,7 +204,7 @@ const ConfessionDetails = ({username, insta, time_stamp, commentsLength}) => {
     }
 
     return (
-        <Flex flexDirection='row' flexWrap='nowrap' color='gray.400' fontSize={{base: '9px', lg:'12px'}} fontWeight='medium'>
+        <Flex flexDirection='row' flexWrap='nowrap' color='gray.400' fontSize={{base: '8px', lg:'12px'}} fontWeight='medium'>
             <Text mr='4px'>Posted by</Text>
             <Username username={username} insta={insta} />
             <Text>{getTimeAgo(time_stamp)}</Text><Text ml='5px' mr='5px'>|</Text>
