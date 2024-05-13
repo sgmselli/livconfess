@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from datetime import datetime, timedelta
 import random
 
-from .models import Confession, IP, Comment
-from .serializers import ConfessionSerializer
+from uuid import uuid4
+
+from .models import Confession, Comment, UserKey
+from .serializers import ConfessionSerializer, AnonymousUserSerializer
 
 @api_view(['POST'])
 def create_comment(request):
@@ -61,13 +63,12 @@ def is_upvoted(request):
     data = request.data['body']
     confession_id = data['id']
     confession = Confession.objects.get(id=confession_id)
+    user_key = data['user_key']
 
-    ip = get_client_ip(request)
-    if not IP.objects.filter(ip_address=ip).exists():
-        IP.objects.create(ip_address=ip)
-        return Response(False)
+    if not UserKey.objects.filter(key=user_key).exists():
+        return Response(False)      
 
-    if confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
+    if confession.upvotes.filter(id=UserKey.objects.get(key=user_key).id).exists():
         return Response(True)
     else:
         return Response(False)
@@ -76,19 +77,17 @@ def is_upvoted(request):
 def is_downvoted(request):
     data = request.data['body']
     confession_id = data['id']
+    user_key = data['user_key']
     confession = Confession.objects.get(id=confession_id)
 
-    ip = get_client_ip(request)
-    if not IP.objects.filter(ip_address=ip).exists():
-        IP.objects.create(ip_address=ip)
+    if not UserKey.objects.filter(key=user_key).exists():
         return Response(False)
 
-    if confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
+    if confession.downvotes.filter(id=UserKey.objects.get(key=user_key).id).exists():
         return Response(True)
     else:
         return Response(False)
     
-
 @api_view(['POST'])
 def create_confession(request):
     data = request.data['body']
@@ -102,50 +101,30 @@ def create_confession(request):
     serializer = ConfessionSerializer(confession, many=False)
     return Response(serializer.data)
 
-def get_client_ip(request):
-    x_forward_for = request.META.get("HTTP_X_FORWARD_FOR")
-    if x_forward_for:
-        ip = x_forward_for.split(",")[0]
-    else:
-        ip = request.META.get("REMOTE_ADDR")
-
-    seperated_nets = ip.split('.')
-    first_two_nets = seperated_nets[0]+'.'+seperated_nets[1]+','+seperated_nets[2]
-    return first_two_nets
-
-@api_view(['POST'])
-def create_ip(request):
-    ip = get_client_ip(request)
-    if not IP.objects.filter(ip_address=ip).exists():
-        IP.objects.create(ip_address=ip)
-        return Response({'created': True})
-    return Response({'created': False})
-
 @api_view(['POST'])
 def upvote_post(request):
     data = request.data['body']
     confession_id = data['id']
+    user_key = data['user_key']
 
     try:
         confession = Confession.objects.get(id=confession_id)
 
-        ip = get_client_ip(request)
-        if not IP.objects.filter(ip_address=ip).exists():
+        if not UserKey.objects.filter(key=user_key).exists():
             return(Response({'upvotes':'unchanged', 'downvote': 'unchanged'}))
-        
-        if confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
-            confession.upvotes.remove(IP.objects.get(ip_address=ip))
+            
+        if confession.upvotes.filter(id=UserKey.objects.get(key=user_key).id).exists():
+            confession.upvotes.remove(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'removed', 'downvote': 'unchanged'}))
-        
-        elif (not confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists()) and (confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists()):
-            confession.upvotes.add(IP.objects.get(ip_address=ip))
-            confession.downvotes.remove(IP.objects.get(ip_address=ip))
+            
+        elif (not confession.upvotes.filter(id=UserKey.objects.get(key=user_key).id).exists()) and (confession.downvotes.filter(id=UserKey.objects.get(key=user_key).id).exists()):
+            confession.upvotes.add(UserKey.objects.get(key=user_key))
+            confession.downvotes.remove(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'added', 'downvote': 'removed'}))
-        
+            
         else:
-            confession.upvotes.add(IP.objects.get(ip_address=ip))
+            confession.upvotes.add(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'added', 'downvote': 'unchanged'}))
-
     except:
         return Response({'upvotes':'unchanged', 'downvotes':'unchanged'})
         
@@ -153,26 +132,26 @@ def upvote_post(request):
 def downvote_post(request):
     data = request.data['body']
     confession_id = data['id']
+    user_key = data['user_key']
 
     try:
         confession = Confession.objects.get(id=confession_id)
 
-        ip = get_client_ip(request)
-        if not IP.objects.filter(ip_address=ip).exists():
-            IP.objects.create(ip_address=ip)
-
-        if confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
-            confession.downvotes.remove(IP.objects.get(ip_address=ip))
+        if not UserKey.objects.filter(key=user_key).exists():
+            return(Response({'upvotes':'unchanged', 'downvote': 'unchanged'}))
+        
+        if confession.downvotes.filter(id=UserKey.objects.get(key=user_key).id).exists():
+            confession.downvotes.remove(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'unchanged', 'downvote': 'removed'}))
         
-        elif (not confession.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists()) and (confession.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists()):
-            confession.downvotes.add(IP.objects.get(ip_address=ip))
-            confession.upvotes.remove(IP.objects.get(ip_address=ip))
+        elif (not confession.downvotes.filter(id=UserKey.objects.get(key=user_key).id).exists()) and (confession.upvotes.filter(id=UserKey.objects.get(key=user_key).id).exists()):
+            confession.downvotes.add(UserKey.objects.get(key=user_key))
+            confession.upvotes.remove(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'removed', 'downvote': 'added'}))
         
         else:
-            confession.downvotes.add(IP.objects.get(ip_address=ip))
-            return(Response({'upvotes':'unchanged', 'downvote': 'added'}))
+            confession.downvotes.add(UserKey.objects.get(key=user_key))
+            return(Response({'upvotes':'added', 'downvote': 'unchanged'}))
 
     except:
         return Response({'upvotes':'unchanged', 'downvotes':'unchanged'})
@@ -182,25 +161,26 @@ def upvote_comment(request):
     data = request.data['body']
     comment_id = data['id']
 
+    user_key = data['user_key']
+
     try:
         comment = Comment.objects.get(id=comment_id)
 
-        ip = get_client_ip(request)
-        if not IP.objects.filter(ip_address=ip).exists():
-            IP.objects.create(ip_address=ip)
-        
-        if comment.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
-            comment.upvotes.remove(IP.objects.get(ip_address=ip))
+        if not UserKey.objects.filter(key=user_key).exists():
+            return(Response({'upvotes':'unchanged', 'downvote': 'unchanged'}))
+            
+        if comment.upvotes.filter(id=UserKey.objects.get(key=user_key).id).exists():
+            comment.upvotes.remove(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'removed', 'downvote': 'unchanged'}))
-        
-        elif not comment.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists() and comment.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
-            comment.upvotes.add(IP.objects.get(ip_address=ip))
-            comment.downvotes.remove(IP.objects.get(ip_address=ip))
+            
+        elif (not comment.upvotes.filter(id=UserKey.objects.get(key=user_key).id).exists()) and (comment.downvotes.filter(id=UserKey.objects.get(key=user_key).id).exists()):
+            comment.upvotes.add(UserKey.objects.get(key=user_key))
+            comment.downvotes.remove(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'added', 'downvote': 'removed'}))
+            
         else:
-            comment.upvotes.add(IP.objects.get(ip_address=ip))
+            comment.upvotes.add(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'added', 'downvote': 'unchanged'}))
-
     except:
         return Response({'upvotes':'unchanged', 'downvotes':'unchanged'})
     
@@ -208,25 +188,26 @@ def upvote_comment(request):
 def downvote_comment(request):
     data = request.data['body']
     comment_id = data['id']
+    user_key = data['user_key']
 
     try:
         comment = Comment.objects.get(id=comment_id)
 
-        ip = get_client_ip(request)
-        if not IP.objects.filter(ip_address=ip).exists():
+        if not UserKey.objects.filter(key=user_key).exists():
             return(Response({'upvotes':'unchanged', 'downvote': 'unchanged'}))
         
-        if comment.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
-            comment.downvotes.remove(IP.objects.get(ip_address=ip))
+        if comment.downvotes.filter(id=UserKey.objects.get(key=user_key).id).exists():
+            comment.downvotes.remove(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'unchanged', 'downvote': 'removed'}))
-        elif not comment.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists() and comment.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
-            comment.downvotes.add(IP.objects.get(ip_address=ip))
-            comment.upvotes.remove(IP.objects.get(ip_address=ip))
+        
+        elif (not comment.downvotes.filter(id=UserKey.objects.get(key=user_key).id).exists()) and (comment.upvotes.filter(id=UserKey.objects.get(key=user_key).id).exists()):
+            comment.downvotes.add(UserKey.objects.get(key=user_key))
+            comment.upvotes.remove(UserKey.objects.get(key=user_key))
             return(Response({'upvotes':'removed', 'downvote': 'added'}))
+        
         else:
-            comment.downvotes.add(IP.objects.get(ip_address=ip))
-            return(Response({'upvotes':'unchanged', 'downvote': 'added'}))
-
+            comment.downvotes.add(UserKey.objects.get(key=user_key))
+            return(Response({'upvotes':'added', 'downvote': 'unchanged'}))
     except:
         return Response({'upvotes':'unchanged', 'downvotes':'unchanged'})
     
@@ -235,12 +216,12 @@ def comment_is_upvoted(request):
     data = request.data['body']
     comment_id = data['id']
     comment = Comment.objects.get(id=comment_id)
+    user_key = data['user_key']
 
-    ip = get_client_ip(request)
-    if not IP.objects.filter(ip_address=ip).exists():
-        return Response(False)
+    if not UserKey.objects.filter(key=user_key).exists():
+        return Response(False)  
 
-    if comment.upvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
+    if comment.upvotes.filter(id=UserKey.objects.get(key=user_key).id).exists():
         return Response(True)
     else:
         return Response(False)
@@ -250,12 +231,23 @@ def comment_is_downvoted(request):
     data = request.data['body']
     comment_id = data['id']
     comment = Comment.objects.get(id=comment_id)
+    user_key = data['user_key']
 
-    ip = get_client_ip(request)
-    if not IP.objects.filter(ip_address=ip).exists():
+    if not UserKey.objects.filter(key=user_key).exists():
         return Response(False)
 
-    if comment.downvotes.filter(id=IP.objects.get(ip_address=ip).id).exists():
+    if comment.downvotes.filter(id=UserKey.objects.get(key=user_key).id).exists():
         return Response(True)
     else:
         return Response(False)
+    
+@api_view(['POST'])
+def create_anonymous_user(request):
+    
+        user = UserKey.objects.create(
+            key = 'user'+str(uuid4())
+        )      
+        serializer = AnonymousUserSerializer(user, many=False)
+        return Response(serializer.data)
+
+     

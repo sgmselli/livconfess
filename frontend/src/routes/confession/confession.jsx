@@ -5,7 +5,7 @@ import LoadingBar from '../../components/loading/loading_bar';
 import LoadingConfession from '../../components/loading/loading_confessions';
 import BackButton from '../../components/back_button/back_button';
 import { comment_is_downvoted, comment_is_upvoted, downvote_comment, get_confession, post_comment, upvote_comment } from '../../api_endpoints/api_endpoints';
-
+import { get_user_key } from '../../local_storage';
 import { Confession } from '../../components/confessions/confession_template';
 import { ShareLinks } from '../../components/links/share_links';
 import { FaRegCommentDots } from "react-icons/fa";
@@ -258,22 +258,26 @@ const CommentVotes = ({updateConfessions, upvotes, downvotes, id}) => {
     }, [upvotes, downvotes])
 
     const isUpvoted = async () => {
-        setUpvoted(await comment_is_upvoted(id));
+        const user_key = await get_user_key();
+        setUpvoted(await comment_is_upvoted(id, user_key));
     }
     
     const isDownvoted = async () => {
-        setDownvoted(await comment_is_downvoted(id));
+        const user_key = await get_user_key();
+        setDownvoted(await comment_is_downvoted(id, user_key));
     }
 
     const handleUpVote = async () => {
-        await upvote_comment(id);
+        const user_key = await get_user_key();
+        await upvote_comment(id, user_key);
         isUpvoted();
         isDownvoted();
         updateConfessions();
     }
 
     const handleDownVote = async (e) => {
-        await downvote_comment(id);
+        const user_key = await get_user_key();
+        await downvote_comment(id, user_key);
         isUpvoted();
         isDownvoted();
         updateConfessions();

@@ -1,21 +1,24 @@
 from django.db import models
 
 from datetime import datetime
-from uuid import uuid1
+from uuid import uuid4
 
-class IP(models.Model):
-    ip_address = models.CharField(max_length=100)
+class UserKey(models.Model):
+    key = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.ip_address
+        return self.key
+    
+class Test(models.Model):
+    test = models.CharField(max_length=100)
 
 class Comment(models.Model):
-    id = uuid1()
+    id = 'comment'+str(uuid4())
     username = models.CharField(max_length=1000, default='anonymous')
     text = models.CharField(max_length=1000)
     time_stamp = models.CharField(max_length=100, default=datetime.now())
-    upvotes = models.ManyToManyField(IP, related_name='comment_upvotes', blank=True)
-    downvotes = models.ManyToManyField(IP, related_name='comment_downvotes', blank=True)
+    upvotes = models.ManyToManyField(UserKey, related_name='comment_upvotes', blank=True)
+    downvotes = models.ManyToManyField(UserKey, related_name='comment_downvotes', blank=True)
 
     def __str__(self):
         return self.text
@@ -27,13 +30,13 @@ class Comment(models.Model):
         return self.upvotes.count()-self.downvotes.count()
 
 class Confession(models.Model):
-    id = uuid1()
+    id = 'confession'+str(uuid4())
     username = models.CharField(max_length=16, default='anonymous')
     instagram = models.CharField(max_length=30, default='')
     text = models.CharField(max_length=500)
     time_stamp = models.CharField(max_length=100, default=datetime.now())
-    upvotes = models.ManyToManyField(IP, related_name='upvotes', blank=True)
-    downvotes = models.ManyToManyField(IP, related_name='downvotes', blank=True)
+    upvotes = models.ManyToManyField(UserKey, related_name='upvotes', blank=True)
+    downvotes = models.ManyToManyField(UserKey, related_name='downvotes', blank=True)
     comments = models.ManyToManyField(Comment, related_name='comments', blank=True)
 
     def __str__(self):

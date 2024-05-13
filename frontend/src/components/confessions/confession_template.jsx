@@ -2,6 +2,7 @@ import { Flex, Text, Box } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 
 import { downvote_post, upvote_post, is_downvoted, is_upvoted } from '../../api_endpoints/api_endpoints';
+import { check_confession_downvote, check_confession_upvote, click_confession_downvote, click_confession_upvote, get_user_key } from '../../local_storage';
 
 import { FaRegThumbsUp } from "react-icons/fa6";
 import { FaThumbsUp } from "react-icons/fa6";
@@ -51,25 +52,28 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
     }, [upvotes, downvotes])
 
     const isUpvoted = async () => {
-        setUpvoted(await is_upvoted(id));
+        setUpvoted(check_confession_upvote(id));
     }
     const isDownvoted = async () => {
-        setDownvoted(await is_downvoted(id));
+        setDownvoted(check_confession_downvote(id));
     }
 
     const handleUpVote = async () => {
-        await upvote_post(id);
+        const user_key = await get_user_key();
+        click_confession_upvote(id);
         isUpvoted();
         isDownvoted();
+        await upvote_post(id, user_key);  
         updateConfessions();
     }
 
-    const handleDownVote = async (e) => {
-        await downvote_post(id);
+    const handleDownVote = async () => {
+        const user_key = await get_user_key();
+        click_confession_downvote(id);
         isUpvoted();
         isDownvoted();
+        await downvote_post(id, user_key); 
         updateConfessions();
-        e.stopPropagation();
     }
 
     const vote_count = () => {
@@ -93,7 +97,7 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
 
             {
                 !downvoted ?
-                    <Box className='noredirect' cursor='pointer' onClick={(e) => handleDownVote(e)} fontSize={{base: 16, lg: 18}}>
+                    <Box className='noredirect' cursor='pointer' onClick={handleDownVote} fontSize={{base: 16, lg: 18}}>
                         <FaRegThumbsDown   />
                     </Box>
                     :

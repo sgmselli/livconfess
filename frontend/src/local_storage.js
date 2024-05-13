@@ -1,8 +1,45 @@
 //Will go through each confession on load and will check if its in the storage upvotes or downvotes, quicker then using the server.
 //When you upvote or downvote, it will call the server but also just change local storage by calling the functions below.
+import { create_ip, create_user_key } from "./api_endpoints/api_endpoints"
 
 export const check_if_storage_exists = () => {
     return localStorage.getItem("userState") !== null
+}
+
+const has_key = () => {
+    if (typeof(Storage) !== "undefined") {
+        const userStateString = localStorage.getItem("userState");
+        if(userStateString === null) {
+            initialise_storage()
+            return false
+        }
+        const userState = JSON.parse(userStateString);
+        const key = userState.userKey
+       
+        return key !== ''
+        
+    } else {
+        console.log("Local storage is not supported by your browser.");
+        return false
+    }
+}
+
+export const get_user_key = async () => {
+    if (typeof(Storage) !== "undefined") {
+        const userStateString = localStorage.getItem("userState");
+        const userState = JSON.parse(userStateString);
+        if (!has_key()) {
+            const key = await create_user_key();
+            userState.userKey = key.key;
+            localStorage.setItem("userState", JSON.stringify(userState));
+            return key.key
+        } else {
+            return userState.userKey
+        }
+        
+    } else {
+        console.log("Local storage is not supported by your browser.");
+    }
 }
 
 export const initialise_storage = () => {
@@ -16,7 +53,8 @@ export const initialise_storage = () => {
                 confession_upvotes: [],
                 confession_downvotes: [],
                 comment_upvotes: [],
-                comment_downvotes: []
+                comment_downvotes: [],
+                userKey: '',
             };
 
             // Convert the object to a JSON string and store it in local storage

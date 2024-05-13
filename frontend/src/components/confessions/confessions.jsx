@@ -11,7 +11,7 @@ import { FaStar } from "react-icons/fa";
 import { GrInstagram } from "react-icons/gr";
 
 import { downvote_post, upvote_post } from "../../api_endpoints/api_endpoints";
-import { check_confession_downvote, check_confession_upvote, click_confession_downvote, click_confession_upvote } from "../../local_storage";
+import { check_confession_downvote, check_confession_upvote, click_confession_downvote, click_confession_upvote, get_user_key } from "../../local_storage";
 
 import LoadingConfession from "../loading/loading_confessions";
 
@@ -108,7 +108,6 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
 
     const [upvoted, setUpvoted] = useState(false);
     const [downvoted, setDownvoted] = useState(false);
-    // const [voteCount, setVoteCount] = useState(upvotes.length - downvotes.length);
 
     useEffect(() => {
         isUpvoted();
@@ -124,18 +123,20 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
     }
 
     const handleUpVote = async () => {  
+        const user_key = await get_user_key();
         click_confession_upvote(id);
         isUpvoted();
         isDownvoted();
-        await upvote_post(id);  
+        await upvote_post(id, user_key);  
         updateConfessions();
     }
 
-    const handleDownVote = async (e) => {
+    const handleDownVote = async () => {
+        const user_key = await get_user_key();
         click_confession_downvote(id);
         isUpvoted();
         isDownvoted();
-        await downvote_post(id); 
+        await downvote_post(id, user_key); 
         updateConfessions();
     }
 
@@ -161,7 +162,7 @@ const ConfessionVotes = ({updateConfessions, id, upvotes, downvotes}) => {
 
             {
                 !downvoted ?
-                    <Box className='noredirect' cursor='pointer' onClick={(e) => handleDownVote(e)} fontSize={{base: 16, lg: 18}}>
+                    <Box className='noredirect' cursor='pointer' onClick={handleDownVote} fontSize={{base: 16, lg: 18}}>
                         <FaRegThumbsDown   />
                     </Box>
                     :

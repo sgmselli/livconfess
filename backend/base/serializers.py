@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from .models import Confession, Comment
+from .models import Confession, Comment, UserKey
+
+class AnonymousUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserKey
+        fields = ['key']
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

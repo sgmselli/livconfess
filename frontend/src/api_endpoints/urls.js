@@ -1,4 +1,5 @@
 const BASE = 'https://livconfessions-backend.onrender.com/';
+// const BASE = 'http://127.0.0.1:8000/';
 
 export const CONFESSIONS_URL = `${BASE}api/confession/`;
 export const NEW_CONFESSIONS_URL = `${BASE}api/new/confessions/`;
@@ -15,3 +16,4 @@ export const COMMENT_UPVOTE_URL = `${BASE}api/comment/upvote/`;
 export const COMMENT_DOWNVOTED_URL = `${BASE}api/comment/downvoted/`;
 export const COMMENT_UPVOTED_URL = `${BASE}api/comment/upvoted/`;
 export const IP_URL = `${BASE}api/ip/`;
+export const USER_URL = `${BASE}api/user/`;

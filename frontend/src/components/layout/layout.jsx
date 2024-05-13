@@ -1,19 +1,19 @@
 import { ChakraProvider, Flex } from '@chakra-ui/react';
-
-import LoadingBar from '../loading/loading_bar';
 import Navbar from '../navbar/navbar';
 import Footer from '../footer/footer';
 import { useEffect } from 'react';
-import { create_ip } from '../../api_endpoints/api_endpoints';
+import { initialise_storage, get_user_key, check_if_storage_exists } from '../../local_storage';
 
 const Layout = ({children}) => {
 
     useEffect(() => {
-        const createIP = async () => {
-            await create_ip();
+        const createKey = async () => {
+            if (!check_if_storage_exists) {
+                await initialise_storage();
+                get_user_key();
+            }
         }
-        createIP();
-
+        createKey();
     }, [])
 
     return (
