@@ -93,7 +93,7 @@ const ConfessionPosted = ({confession, updateConfessions}) => {
                 confession ?
 
                     <Flex flexDirection='column' gap={5}>
-                        <Confession idx={1} updateConfessions={updateConfessions} id={confession.id} text={confession.text} username={confession.username} time_stamp={confession.time_stamp} upvotes={confession.upvotes} downvotes={confession.downvotes} commentsLength={confession.comments.length}/>
+                        <Confession idx={1} updateConfessions={updateConfessions} id={confession.id} text={confession.text} username={confession.username} time_stamp={confession.time_stamp} upvotes={confession.upvotes} downvotes={confession.downvotes} insta={confession.instagram} commentsLength={confession.comments.length}/>
                         <ShareLinks id={confession.id} />
                     </Flex>
 
@@ -121,7 +121,7 @@ const CommentForm = ({id, updateConfessions}) => {
     const toast = useToast();
 
     const handleSubmit = async () => {
-        if (text.length > 3) {
+        if (text.length > 0 && text.length < 300) {
             await post_comment(id, text)
             updateConfessions();
             document.getElementById('textarea').value = '';

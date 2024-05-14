@@ -15,7 +15,8 @@ def create_comment(request):
     confession_id = data['id']
 
     comment = Comment.objects.create(
-        text = data['text']
+        text = data['text'],
+        time_stamp = datetime.now(),
     )
 
     confession = Confession.objects.get(id=confession_id)
